@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Employee {
+  id             String               @id
+  name           String
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  monthlyRecords MonthlyOutstanding[]
+}
+
+model MonthlyOutstanding {
+  id                   String   @id @default(cuid())
+  employeeId           String
+  year                 Int
+  month                Int
+  additionalAdvance    Decimal  @default(0) @db.Decimal(12, 2)
+  monthLess            Decimal  @default(0) @db.Decimal(12, 2)
+  remainingOutstanding Decimal  @default(0) @db.Decimal(12, 2)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  employee             Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, year, month])
+  @@index([year, month])
+  @@index([employeeId])
+}

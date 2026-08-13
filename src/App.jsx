@@ -9,6 +9,8 @@ import EmployeeTable from "./components/payroll/EmployeeTable";
 import { processPayroll } from "./utils/processPayroll";
 import { calculateSummary } from "./utils/summary";
 
+const API_BASE = import.meta.env.VITE_API_URL || "";
+
 function App() {
   const [employees, setEmployees] = useState([]);
   const [loadingEmployees, setLoadingEmployees] = useState(false);
@@ -36,7 +38,7 @@ function App() {
         const dbMonth = settings.month + 1;
 
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/payroll/month?year=${settings.year}&month=${dbMonth}`
+          `${API_BASE}/api/payroll/month?year=${settings.year}&month=${dbMonth}`
         );
 
         const data = await response.json();

@@ -4,6 +4,8 @@ import { mergeEmployees } from "@/utils/mergeEmployees";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
+const API_BASE = import.meta.env.VITE_API_URL || "";
+
 export default function PayrollEditor({
   attendanceData,
   setEmployees,
@@ -79,7 +81,7 @@ export default function PayrollEditor({
 
     // 3. Save to backend
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/payroll/month`,
+      `${API_BASE}/api/payroll/month`,
       {
         method: "POST",
         headers: {

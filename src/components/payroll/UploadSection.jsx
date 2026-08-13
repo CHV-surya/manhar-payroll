@@ -29,6 +29,8 @@ import { parsePayrollFile } from "@/utils/payrollParser";
 import { mergeEmployees } from "@/utils/mergeEmployees";
 import { parseAttendanceFile } from "@/utils/attendanceParser";
 
+const API_BASE = import.meta.env.VITE_API_URL || "";
+
 export default function UploadSection({
   setEmployees,
   settings,
@@ -90,7 +92,7 @@ export default function UploadSection({
 
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/payroll/month/replace`,
+      `${API_BASE}/api/payroll/month/replace`,
       {
         method: "POST",
 
@@ -125,7 +127,7 @@ export default function UploadSection({
      */
 
     const monthResponse = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/payroll/month?year=${year}&month=${month}`
+      `${API_BASE}/api/payroll/month?year=${year}&month=${month}`
     );
 
     const monthData = await monthResponse.json();
@@ -299,7 +301,7 @@ export default function UploadSection({
         }));
 
       const response = await fetch(
-  `${import.meta.env.VITE_API_URL}/api/payroll/month`,
+  `${API_BASE}/api/payroll/month`,
   {
     method: "POST",
 

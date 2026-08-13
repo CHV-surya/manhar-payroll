@@ -7,10 +7,16 @@ dotenv.config({
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client.ts";
 
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL,
-});
+const globalForPrisma = globalThis;
 
-export const prisma = new PrismaClient({
-  adapter,
-});
+if (!globalForPrisma.prisma) {
+  const adapter = new PrismaPg({
+    connectionString: process.env.DATABASE_URL,
+  });
+
+  globalForPrisma.prisma = new PrismaClient({
+    adapter,
+  });
+}
+
+export const prisma = globalForPrisma.prisma;

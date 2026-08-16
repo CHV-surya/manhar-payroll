@@ -79,7 +79,8 @@ function App() {
             weeklyOff: 0,
             leavesTaken: 0,
 
-            monthlySalary: 0,
+            monthlySalary:
+              Number(employee.salary) || 0,
             commission: 0,
             lunchBoxAllowed: false,
 

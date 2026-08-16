@@ -11,34 +11,70 @@ export default function PayrollEditor({
   setEmployees,
   settings,
   onClose,
+  onConflict,
 }) {
   const [rows, setRows] = useState([]);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    setRows(
-      attendanceData.map((emp) => ({
-        id: emp.id,
-        name: emp.name,
+    /*
+     * Fetch previous-month salary prefill.
+     * Then initialize rows with prefilled salary.
+     */
+    const initRows = async () => {
+      let salaryMap = {};
 
-        workingDays: emp.workingDays,
-        weeklyOff: emp.weeklyOff,
-        leavesTaken: emp.leavesTaken,
+      try {
+        const dbMonth = settings.month + 1;
+        const response = await fetch(
+          `${API_BASE}/api/payroll/month/salary-prefill?year=${settings.year}&month=${dbMonth}`
+        );
+        const data = await response.json();
 
-        monthlySalary: "",
-        commission: 0,
-        lunchBoxAllowed: false,
+        if (response.ok && data.success) {
+          salaryMap = data.salaryMap || {};
+        }
+      } catch (err) {
+        console.error(
+          "Failed to fetch salary prefill:",
+          err
+        );
+      }
 
-        monthlyAdvance: 0,
-        clothTaken: 0,
-        additionalAdvance: 0,
-        monthLess: 0,
-        wholesale: 0,
+      setRows(
+        attendanceData.map((emp) => {
+          const empId = String(emp.id).trim();
+          const prefillSalary = salaryMap[empId];
 
-        previousOutstanding: 0,
-      }))
-    );
-  }, [attendanceData]);
+          return {
+            id: emp.id,
+            name: emp.name,
+
+            workingDays: emp.workingDays,
+            weeklyOff: emp.weeklyOff,
+            leavesTaken: emp.leavesTaken,
+
+            monthlySalary:
+              prefillSalary != null && prefillSalary > 0
+                ? prefillSalary
+                : "",
+            commission: 0,
+            lunchBoxAllowed: false,
+
+            monthlyAdvance: 0,
+            clothTaken: 0,
+            additionalAdvance: 0,
+            monthLess: 0,
+            wholesale: 0,
+
+            previousOutstanding: 0,
+          };
+        })
+      );
+    };
+
+    initRows();
+  }, [attendanceData, settings.month, settings.year]);
 
   const updateValue = (index, field, value) => {
     const updated = [...rows];
@@ -72,6 +108,9 @@ export default function PayrollEditor({
       id: String(employee.id).trim(),
       name: String(employee.name ?? "").trim(),
 
+      salary:
+        Number(employee.monthlySalary) || 0,
+
       additionalAdvance:
         Number(employee.additionalAdvance) || 0,
 
@@ -96,6 +135,21 @@ export default function PayrollEditor({
     );
 
     const data = await response.json();
+
+    if (
+      response.status === 409 &&
+      data.requiresConfirmation
+    ) {
+      if (typeof onConflict === "function") {
+        onConflict(
+          data,
+          result,
+          employeesForDatabase,
+          settings.month + 1
+        );
+        return;
+      }
+    }
 
     if (!response.ok || !data.success) {
       throw new Error(

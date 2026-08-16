@@ -20,6 +20,7 @@ model MonthlyOutstanding {
   employeeId           String
   year                 Int
   month                Int
+  salary               Decimal  @default(0) @db.Decimal(12, 2)
   additionalAdvance    Decimal  @default(0) @db.Decimal(12, 2)
   monthLess            Decimal  @default(0) @db.Decimal(12, 2)
   remainingOutstanding Decimal  @default(0) @db.Decimal(12, 2)

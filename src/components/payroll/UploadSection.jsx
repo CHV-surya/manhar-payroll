@@ -71,6 +71,32 @@ export default function UploadSection({
   }));
 };
 
+  const handlePayrollConflict = (data, result, employeesForDatabase, dbMonth, file = null) => {
+    setReplacementData({
+      file,
+      employees: result.employees,
+      employeesForDatabase,
+      missingEmployees: data.missingEmployees || [],
+      year: settings.year,
+      month: dbMonth,
+    });
+
+    showDialog(
+      "warning",
+      `Payroll for ${settings.year}-${String(dbMonth).padStart(2, "0")} Already Exists`,
+      `This month already has payroll data.\n\n` +
+        `Employees missing from the new upload:\n\n` +
+        (
+          data.missingEmployees?.length
+            ? data.missingEmployees
+                .map((employee) => `• ${employee.name} (${employee.id})`)
+                .join("\n")
+            : "None"
+        ) +
+        `\n\nUpdating this month may affect later months.`
+    );
+  };
+
   const chooseAttendance = () => {
     attendanceInputRef.current?.click();
   };
@@ -293,6 +319,9 @@ export default function UploadSection({
             employee.name ?? ""
           ).trim(),
 
+          salary:
+            Number(employee.monthlySalary) || 0,
+
           additionalAdvance:
             Number(employee.additionalAdvance) || 0,
 
@@ -332,34 +361,7 @@ if (
   response.status === 409 &&
   data.requiresConfirmation
 ) {
-  setReplacementData({
-    file,
-    employees: result.employees,
-    employeesForDatabase,
-    missingEmployees:
-      data.missingEmployees || [],
-    year: settings.year,
-    month: dbMonth,
-  });
-
-  showDialog(
-    "warning",
-    `Payroll for ${settings.year}-${String(dbMonth).padStart(2, "0")} Already Exists`,
-    `This month already has payroll data.\n\n` +
-      `Employees missing from the new upload:\n\n` +
-      (
-        data.missingEmployees?.length
-          ? data.missingEmployees
-              .map(
-                (employee) =>
-                  `• ${employee.name} (${employee.id})`
-              )
-              .join("\n")
-          : "None"
-      ) +
-      `\n\nUpdating this month may affect later months.`
-  );
-
+  handlePayrollConflict(data, result, employeesForDatabase, dbMonth, file);
   return;
 }
 
@@ -556,7 +558,8 @@ if (!response.ok || !data.success) {
                   onClick={() =>
                     downloadPayrollTemplate(
                       attendanceData,
-                      attendanceSummary
+                      attendanceSummary,
+                      settings
                     )
                   }
                 >
@@ -622,6 +625,10 @@ if (!response.ok || !data.success) {
           setEmployees={setEmployees}
           settings={settings}
           onClose={() => setShowEditor(false)}
+          onConflict={(data, result, employeesForDatabase, dbMonth) => {
+            handlePayrollConflict(data, result, employeesForDatabase, dbMonth, null);
+            setShowEditor(false);
+          }}
         />
       )}
 

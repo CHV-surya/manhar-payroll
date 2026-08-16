@@ -108,6 +108,9 @@ const missingEmployees = existingMonthRecords
        * Convert all numeric values to JavaScript numbers.
        */
 
+      const salary =
+        Number(employee.salary) || 0;
+
       const additionalAdvance =
         Number(employee.additionalAdvance) || 0;
 
@@ -195,6 +198,7 @@ const missingEmployees = existingMonthRecords
           },
 
           update: {
+            salary,
             additionalAdvance,
             monthLess,
             remainingOutstanding,
@@ -204,6 +208,7 @@ const missingEmployees = existingMonthRecords
             employeeId: id,
             year,
             month,
+            salary,
             additionalAdvance,
             monthLess,
             remainingOutstanding,
@@ -213,6 +218,7 @@ const missingEmployees = existingMonthRecords
       results.push({
         employeeId: id,
         name,
+        salary,
         previousOutstanding,
         additionalAdvance,
         monthLess,
@@ -320,6 +326,9 @@ router.post("/month/replace", async (req, res) => {
         continue;
       }
 
+      const salary =
+        Number(employee.salary) || 0;
+
       const additionalAdvance =
         Number(
           employee.additionalAdvance
@@ -392,6 +401,7 @@ router.post("/month/replace", async (req, res) => {
         },
 
         update: {
+          salary,
           additionalAdvance,
           monthLess,
           remainingOutstanding,
@@ -401,6 +411,7 @@ router.post("/month/replace", async (req, res) => {
           employeeId: id,
           year,
           month,
+          salary,
           additionalAdvance,
           monthLess,
           remainingOutstanding,
@@ -565,6 +576,9 @@ router.get("/month", async (req, res) => {
         employeeId: record.employeeId,
         name: record.employee.name,
 
+        salary:
+          Number(record.salary),
+
         additionalAdvance:
           Number(record.additionalAdvance),
 
@@ -591,6 +605,86 @@ router.get("/month", async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to fetch monthly payroll.",
+    });
+  }
+});
+
+/*
+ * GET /month/salary-prefill
+ *
+ * Returns the previous month's salary for every employee.
+ * Used by the template download and PayrollEditor prefill.
+ *
+ * New employees (no previous record) get salary = 0.
+ * Employee ID is always the key — never name.
+ */
+router.get("/month/salary-prefill", async (req, res) => {
+  try {
+    const year = Number(req.query.year);
+    const month = Number(req.query.month);
+
+    if (!year || !month || month < 1 || month > 12) {
+      return res.status(400).json({
+        success: false,
+        message: "Valid year and month are required.",
+      });
+    }
+
+    /*
+     * Determine previous month.
+     *
+     * October 2026  -> September 2026
+     * January 2027  -> December 2026
+     */
+    const previousMonth = month === 1 ? 12 : month - 1;
+    const previousYear = month === 1 ? year - 1 : year;
+
+    /*
+     * Find all records for the previous month.
+     */
+    const previousRecords =
+      await prisma.monthlyOutstanding.findMany({
+        where: {
+          year: previousYear,
+          month: previousMonth,
+        },
+        select: {
+          employeeId: true,
+          salary: true,
+        },
+      });
+
+    /*
+     * Build a map: employeeId -> salary
+     *
+     * Employees not found here will get 0
+     * on the frontend (new employee rule).
+     */
+    const salaryMap = {};
+
+    for (const record of previousRecords) {
+      salaryMap[record.employeeId] =
+        Number(record.salary);
+    }
+
+    return res.json({
+      success: true,
+      year,
+      month,
+      previousYear,
+      previousMonth,
+      salaryMap,
+    });
+
+  } catch (error) {
+    console.error(
+      "Salary prefill error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch salary prefill.",
     });
   }
 });

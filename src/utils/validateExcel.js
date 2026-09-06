@@ -9,10 +9,12 @@ const REQUIRED_COLUMNS = [
   "Lunch Box Allowed",
 
   // New Columns
+  "Labor Holiday",
   "Salary Advance",
   "Cloth Taken",
   "Additional Advance",
   "Month Less",
+  "OB",
   "Wholesale",
 ];
 
@@ -119,6 +121,17 @@ export function validateExcel(data) {
       };
     }
 
+    // Labor Holiday
+    if (
+      isNaN(Number(row["Labor Holiday"])) ||
+      Number(row["Labor Holiday"]) < 0
+    ) {
+      return {
+        valid: false,
+        message: `Invalid Labor Holiday at Row ${i + 2}`,
+      };
+    }
+
     // Salary Advance
     if (
       isNaN(Number(row["Salary Advance"])) ||
@@ -171,6 +184,17 @@ export function validateExcel(data) {
       return {
         valid: false,
         message: `Invalid Wholesale at Row ${i + 2}`,
+      };
+    }
+
+    // OB
+    if (
+      isNaN(Number(row["OB"])) ||
+      Number(row["OB"]) < 0
+    ) {
+      return {
+        valid: false,
+        message: `Invalid OB at Row ${i + 2}`,
       };
     }
   }

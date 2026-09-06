@@ -19,10 +19,12 @@ export const downloadTemplate = (settings) => {
       "Lunch Box Allowed": "YES",
 
       // New Fields
+      "Labor Holiday": 0,
       "Salary Advance": 0,
       "Cloth Taken": 0,
       "Additional Advance": 0,
       "Month Less": 0,
+      "OB": 0,
       Wholesale: 0,
     },
   ];
@@ -40,10 +42,12 @@ export const downloadTemplate = (settings) => {
     { wch: 20 }, // Lunch Box Allowed
 
     // New Fields
+    { wch: 15 }, // Labor Holiday
     { wch: 18 }, // Monthly Advance
     { wch: 18 }, // Cloth Taken
     { wch: 20 }, // Additional Advance
     { wch: 18 }, // Month Less
+    { wch: 18 }, // OB
     { wch: 15 }, // Wholesale
   ];
 

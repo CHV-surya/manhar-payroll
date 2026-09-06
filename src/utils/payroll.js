@@ -155,6 +155,9 @@ export function calculatePayroll(
   const casualLeavePay =
     round(casualLeaves * dailySalary);
 
+  const laborHoliday = employee.laborHoliday || 0;
+  const laborHolidayPay = round(laborHoliday * dailySalary);
+
   // Gross Salary
   const grossSalary =
     employee.monthlySalary +
@@ -162,7 +165,8 @@ export function calculatePayroll(
     weeklyOffPay +
     bonus +
     employee.commission +
-    employee.wholesale;
+    employee.wholesale +
+    laborHolidayPay;
 
   // Additions
   const additions =
@@ -173,10 +177,13 @@ export function calculatePayroll(
   const previousOutstanding =
     employee.previousOutstanding || 0;
 
+  const ob = employee.ob || 0;
+
   // Total Outstanding Loan
   const outstandingLoan =
     previousOutstanding +
-    employee.additionalAdvance;
+    employee.additionalAdvance +
+    ob;
 
   // Remaining Outstanding Loan
   const remainingOutstanding =
@@ -218,6 +225,10 @@ export function calculatePayroll(
 
     bonus,
 
+    laborHoliday,
+
+    laborHolidayPay,
+
     extraLeaves,
 
     remainingLeaves,
@@ -231,6 +242,8 @@ export function calculatePayroll(
     previousOutstanding,
 
     outstandingLoan,
+
+    ob,
 
     remainingOutstanding,
 

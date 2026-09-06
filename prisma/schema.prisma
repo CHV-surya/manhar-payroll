@@ -24,6 +24,8 @@ model MonthlyOutstanding {
   additionalAdvance    Decimal  @default(0) @db.Decimal(12, 2)
   monthLess            Decimal  @default(0) @db.Decimal(12, 2)
   remainingOutstanding Decimal  @default(0) @db.Decimal(12, 2)
+  laborHoliday         Int      @default(0)
+  ob                   Decimal  @default(0) @db.Decimal(12, 2)
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
   employee             Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)

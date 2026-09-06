@@ -56,10 +56,12 @@ export async function downloadPayrollTemplate(
           : "",
       "Commission": 0,
       "Lunch Box Allowed": "NO",
+      "Labor Holiday": 0,
       "Salary Advance": 0,
       "Cloth Taken": 0,
       "Additional Advance": 0,
       "Month Less": 0,
+      "OB": 0,
       "Wholesale": 0,
     };
   });
@@ -75,10 +77,12 @@ export async function downloadPayrollTemplate(
     { wch: 18 },
     { wch: 15 },
     { wch: 20 },
+    { wch: 15 },
     { wch: 18 },
     { wch: 15 },
     { wch: 20 },
     { wch: 15 },
+    { wch: 18 },
     { wch: 15 },
   ];
 

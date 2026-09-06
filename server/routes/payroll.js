@@ -117,6 +117,12 @@ const missingEmployees = existingMonthRecords
       const monthLess =
         Number(employee.monthLess) || 0;
 
+      const laborHoliday =
+        Number(employee.laborHoliday) || 0;
+
+      const ob =
+        Number(employee.ob) || 0;
+
       /*
        * Create employee if new.
        * Update name if employee already exists.
@@ -179,7 +185,8 @@ const missingEmployees = existingMonthRecords
       const remainingOutstanding = Math.max(
   0,
   previousOutstanding +
-    additionalAdvance -
+    additionalAdvance +
+    ob -
     monthLess
 );
 
@@ -202,6 +209,8 @@ const missingEmployees = existingMonthRecords
             additionalAdvance,
             monthLess,
             remainingOutstanding,
+            laborHoliday,
+            ob,
           },
 
           create: {
@@ -212,6 +221,8 @@ const missingEmployees = existingMonthRecords
             additionalAdvance,
             monthLess,
             remainingOutstanding,
+            laborHoliday,
+            ob,
           },
         });
 
@@ -337,6 +348,12 @@ router.post("/month/replace", async (req, res) => {
       const monthLess =
         Number(employee.monthLess) || 0;
 
+      const laborHoliday =
+        Number(employee.laborHoliday) || 0;
+
+      const ob =
+        Number(employee.ob) || 0;
+
       /*
        * Keep Employee master record.
        */
@@ -387,7 +404,8 @@ router.post("/month/replace", async (req, res) => {
         Math.max(
           0,
           previousOutstanding +
-            additionalAdvance -
+            additionalAdvance +
+            ob -
             monthLess
         );
 
@@ -405,6 +423,8 @@ router.post("/month/replace", async (req, res) => {
           additionalAdvance,
           monthLess,
           remainingOutstanding,
+          laborHoliday,
+          ob,
         },
 
         create: {
@@ -415,6 +435,8 @@ router.post("/month/replace", async (req, res) => {
           additionalAdvance,
           monthLess,
           remainingOutstanding,
+          laborHoliday,
+          ob,
         },
       });
     }
@@ -584,6 +606,12 @@ router.get("/month", async (req, res) => {
 
         monthLess:
           Number(record.monthLess),
+
+        laborHoliday:
+          Number(record.laborHoliday),
+
+        ob:
+          Number(record.ob),
 
         previousOutstanding,
 

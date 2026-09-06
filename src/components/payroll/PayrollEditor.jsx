@@ -66,6 +66,8 @@ export default function PayrollEditor({
             additionalAdvance: 0,
             monthLess: 0,
             wholesale: 0,
+            laborHoliday: 0,
+            ob: 0,
 
             previousOutstanding: 0,
           };
@@ -116,6 +118,12 @@ export default function PayrollEditor({
 
       monthLess:
         Number(employee.monthLess) || 0,
+
+      laborHoliday:
+        Number(employee.laborHoliday) || 0,
+
+      ob:
+        Number(employee.ob) || 0,
     }));
 
     // 3. Save to backend
@@ -196,6 +204,12 @@ export default function PayrollEditor({
 
           monthLess:
             databaseRecord?.monthLess ?? 0,
+
+          laborHoliday:
+            databaseRecord?.laborHoliday ?? 0,
+
+          ob:
+            databaseRecord?.ob ?? 0,
         };
       }
     );
@@ -281,6 +295,9 @@ export default function PayrollEditor({
                 Leaves
               </th>
               <th className="border p-2">
+                Labor Holiday
+              </th>
+              <th className="border p-2">
                 Salary
               </th>
               <th className="border p-2">
@@ -297,6 +314,9 @@ export default function PayrollEditor({
               </th>
               <th className="border p-2">
                 Month Less
+              </th>
+              <th className="border p-2">
+                OB
               </th>
               <th className="border p-2">
                 Wholesale
@@ -328,6 +348,21 @@ export default function PayrollEditor({
 
                 <td className="border p-2">
                   {row.leavesTaken}
+                </td>
+
+                <td className="border p-2">
+                  <input
+                    type="number"
+                    value={row.laborHoliday}
+                    onChange={(e) =>
+                      updateValue(
+                        index,
+                        "laborHoliday",
+                        Number(e.target.value)
+                      )
+                    }
+                    className="border rounded px-2 py-1 w-20"
+                  />
                 </td>
 
                 <td className="border p-2">
@@ -417,6 +452,21 @@ export default function PayrollEditor({
                       )
                     }
                     className="border rounded px-2 py-1 w-24"
+                  />
+                </td>
+
+                <td className="border p-2">
+                  <input
+                    type="number"
+                    value={row.ob}
+                    onChange={(e) =>
+                      updateValue(
+                        index,
+                        "ob",
+                        Number(e.target.value)
+                      )
+                    }
+                    className="border rounded px-2 py-1 w-28"
                   />
                 </td>
 

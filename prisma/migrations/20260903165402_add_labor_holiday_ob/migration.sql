@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "MonthlyOutstanding" ADD COLUMN     "laborHoliday" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "ob" DECIMAL(12,2) NOT NULL DEFAULT 0;

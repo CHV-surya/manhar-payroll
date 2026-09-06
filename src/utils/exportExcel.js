@@ -47,6 +47,9 @@ export function exportPayroll(employees, settings) {
 
     Wholesale: emp.wholesale,
 
+    "Labor Holiday": emp.laborHoliday,
+    "Labor Holiday Pay": emp.laborHolidayPay,
+
     "Gross Salary": emp.grossSalary,
 
     "Tea Amount": emp.teaCost,
@@ -66,6 +69,7 @@ export function exportPayroll(employees, settings) {
     "Cloth Taken": emp.clothTaken,
 
     "Additional Advance": emp.additionalAdvance,
+    "OB": emp.ob,
 
     "Previous Outstanding":
       emp.previousOutstanding,
@@ -101,6 +105,8 @@ export function exportPayroll(employees, settings) {
     { wch: 18 }, // Weekly Off Pay
     { wch: 15 }, // Commission
     { wch: 15 }, // Wholesale
+    { wch: 15 }, // Labor Holiday
+    { wch: 18 }, // Labor Holiday Pay
     { wch: 18 }, // Gross Salary
     { wch: 15 }, // Tea Amount
     { wch: 20 }, // Lunch Box Allowed
@@ -110,6 +116,7 @@ export function exportPayroll(employees, settings) {
     { wch: 18 }, // Monthly Advance
     { wch: 18 }, // Cloth Taken
     { wch: 20 }, // Additional Advance
+    { wch: 18 }, // OB
     { wch: 22 }, // Previous Outstanding
     { wch: 20 }, // Outstanding Loan
     { wch: 18 }, // Month Less

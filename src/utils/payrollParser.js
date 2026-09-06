@@ -48,10 +48,12 @@ export async function parsePayrollFile(file) {
     leavesTaken: getColumn("Leaves Taken"),
     commission: getColumn("Commission"),
     lunchBoxAllowed: getColumn("Lunch Box Allowed"),
+    laborHoliday: getColumn("Labor Holiday"),
     salaryAdvance: getColumn("Salary Advance"),
     clothTaken: getColumn("Cloth Taken"),
     additionalAdvance: getColumn("Additional Advance"),
     monthLess: getColumn("Month Less"),
+    ob: getColumn("OB"),
     wholesale: getColumn("Wholesale"),
   };
   const required = [
@@ -121,8 +123,14 @@ for (const key of required) {
       monthLess:
         Number(row[columns.monthLess]) || 0,
 
+      ob:
+        Number(row[columns.ob]) || 0,
+
       wholesale:
         Number(row[columns.wholesale]) || 0,
+
+      laborHoliday:
+        Number(row[columns.laborHoliday]) || 0,
 
       previousOutstanding: 0,
     });

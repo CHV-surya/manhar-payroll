@@ -91,10 +91,15 @@ export async function recalculateOutstandingFromMonth(
       record.monthLess ?? 0
     );
 
+    const ob = Number(
+      record.ob ?? 0
+    );
+
     const remainingOutstanding = Math.max(
       0,
       previousOutstanding +
-        additionalAdvance -
+        additionalAdvance +
+        ob -
         monthLess
     );
 

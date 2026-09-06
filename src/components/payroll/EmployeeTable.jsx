@@ -80,17 +80,17 @@ export default function EmployeeTable({
     
       <div
   ref={tableWrapperRef}
-  className=" rounded-lg border"
+  className="rounded-lg border overflow-auto max-h-[calc(100vh-200px)]"
 >
         
         <Table>
 
-          <TableHeader>
+          <TableHeader className="sticky top-0 z-30 bg-white outline outline-1 outline-gray-200 shadow-sm">
 
             <TableRow>
 
-              <TableHead className="sticky left-0 z-20 w-[70px] min-w-[70px] bg-white">ID</TableHead>
-              <TableHead className="sticky left-[70px] min-w-[220px] bg-white">Name</TableHead>
+              <TableHead className="sticky left-0 z-40 w-[70px] min-w-[70px] bg-white">ID</TableHead>
+              <TableHead className="sticky left-[70px] z-40 min-w-[220px] bg-white">Name</TableHead>
               <TableHead>Monthly Salary</TableHead>
               <TableHead>Daily Salary</TableHead>
               <TableHead>Working Days</TableHead>
@@ -99,27 +99,23 @@ export default function EmployeeTable({
               <TableHead>Casual Leave</TableHead>
               <TableHead>Casual Leave Pay</TableHead>
               <TableHead>Leaves Taken</TableHead>
-
               <TableHead>Bonus</TableHead>
               <TableHead>Weekly Off Pay</TableHead>
-
+              <TableHead>Labor Holiday</TableHead>
+              <TableHead>Labor Holiday Pay</TableHead>
               <TableHead>Commission</TableHead>
               <TableHead>Wholesale</TableHead>
-
-                <TableHead>Gross Salary</TableHead>
-
-                <TableHead>Tea</TableHead>
+              <TableHead>Grocery</TableHead>
+              <TableHead>Tea</TableHead>
               <TableHead>Lunch Box</TableHead>
-
               <TableHead>Leave Deduction</TableHead>
               <TableHead>Salary Advance</TableHead>
               <TableHead>Cloth Taken</TableHead>
               <TableHead>Additional Advance</TableHead>
+              <TableHead>OB</TableHead>
               <TableHead>Previous Outstanding</TableHead>
               <TableHead>Month Less</TableHead>
-              
               <TableHead>Remaining Outstanding</TableHead>
-
               <TableHead className="text-right">
                 Final Salary
               </TableHead>
@@ -135,7 +131,7 @@ export default function EmployeeTable({
               <TableRow>
 
                 <TableCell
-                  colSpan={25}
+                  colSpan={28}
                   className="text-center py-10"
                 >
                   No employees found.
@@ -150,101 +146,33 @@ export default function EmployeeTable({
                 <TableRow key={emp.id}>
 
                   <TableCell className="sticky left-0 z-20 w-[70px] min-w-[70px] bg-white">{emp.id}</TableCell>
-
-                 <TableCell className="sticky left-[70px] min-w-[220px] bg-white font-medium">
-                    {emp.name}
-                  </TableCell>
-
-                  <TableCell>
-                    {formatCurrency(emp.monthlySalary)}
-                  </TableCell>
-
-                  <TableCell>
-                    {formatCurrency(emp.dailySalary)}
-                  </TableCell>
-
-                  <TableCell>
-                    {emp.workingDays}
-                  </TableCell>
-
-                  <TableCell>
-                    {emp.weeklyOff}
-                  </TableCell>
-
-                  <TableCell>
-                    {emp.totalAttendance}
-                  </TableCell>
-
-                  <TableCell>
-                    {emp.allowedLeaves}
-                  </TableCell>
-
-                  <TableCell className="text-green-600 font-semibold">
-                    {formatCurrency(emp.casualLeavePay)}
-                  </TableCell>
-
-                  <TableCell>
-                    {emp.leavesTaken}
-                  </TableCell>
-
-                  <TableCell className="text-green-600 font-semibold">
-                    {formatCurrency(emp.bonus)}
-                  </TableCell>
-
-                  <TableCell className="text-green-600 font-semibold">
-                    {formatCurrency(emp.weeklyOffPay)}
-                  </TableCell>
-
-                  <TableCell className="text-blue-600 font-semibold">
-  {formatCurrency(emp.commission)}
-</TableCell>
-
-<TableCell className="text-blue-600 font-semibold">
-  {formatCurrency(emp.wholesale)}
-</TableCell>
-
-<TableCell className="font-semibold">
-  {formatCurrency(emp.grossSalary)}
-</TableCell>
-
-<TableCell className="text-green-600 font-semibold">
-  {formatCurrency(emp.teaCost)}
-</TableCell>
-
-<TableCell className="text-green-600 font-semibold">
-  {formatCurrency(emp.lunchBoxCost)}
-</TableCell>
-
-                  <TableCell className="text-red-600 font-semibold">
-                    {formatCurrency(emp.leaveDeduction)}
-                  </TableCell>
-
-                  <TableCell className="text-orange-600 font-semibold">
-                    {formatCurrency(emp.monthlyAdvance)}
-                  </TableCell>
-
-                  <TableCell className="text-orange-600 font-semibold">
-                    {formatCurrency(emp.clothTaken)}
-                  </TableCell>
-
-                  <TableCell className="text-orange-600 font-semibold">
-                    {formatCurrency(emp.additionalAdvance)}
-                  </TableCell>
-                  <TableCell className="text-orange-600 font-semibold">
-                    {formatCurrency(emp.previousOutstanding || 0)}
-                  </TableCell>
-
-                  <TableCell className="text-red-600 font-semibold">
-                    {formatCurrency(emp.monthLess)}
-                  </TableCell>
-
-                  <TableCell className="text-orange-600 font-semibold">
-                    {formatCurrency(emp.remainingOutstanding)}
-                  </TableCell>
-
-                  <TableCell className="text-right font-bold text-emerald-700">
-                    {formatCurrency(emp.finalSalary)}
-                  </TableCell>
+                  <TableCell className="sticky left-[70px] z-20 min-w-[220px] bg-white font-medium">{emp.name}</TableCell>
+                  <TableCell>{formatCurrency(emp.monthlySalary)}</TableCell>
+                  <TableCell>{formatCurrency(emp.dailySalary)}</TableCell>
+                  <TableCell>{emp.workingDays}</TableCell>
+                  <TableCell>{emp.weeklyOff}</TableCell>
+                  <TableCell>{emp.totalAttendance}</TableCell>
+                  <TableCell>{emp.allowedLeaves}</TableCell>
+                  <TableCell className="text-green-600 font-semibold">{formatCurrency(emp.casualLeavePay)}</TableCell>
+                  <TableCell>{emp.leavesTaken}</TableCell>
+                  <TableCell className="text-green-600 font-semibold">{formatCurrency(emp.bonus)}</TableCell>
+                  <TableCell className="text-green-600 font-semibold">{formatCurrency(emp.weeklyOffPay)}</TableCell>
+                  <TableCell>{emp.laborHoliday || 0}</TableCell>
+                  <TableCell className="text-green-600 font-semibold">{formatCurrency(emp.laborHolidayPay)}</TableCell>
+                  <TableCell className="text-blue-600 font-semibold">{formatCurrency(emp.commission)}</TableCell>
+                  <TableCell className="text-blue-600 font-semibold">{formatCurrency(emp.wholesale)}</TableCell>
+                  <TableCell className="text-blue-600 font-semibold">{formatCurrency(emp.grocery || 0)}</TableCell>
+                  <TableCell className="text-green-600 font-semibold">{formatCurrency(emp.teaCost)}</TableCell>
+                  <TableCell className="text-green-600 font-semibold">{formatCurrency(emp.lunchBoxCost)}</TableCell>
+                  <TableCell className="text-red-600 font-semibold">{formatCurrency(emp.leaveDeduction)}</TableCell>
+                  <TableCell className="text-orange-600 font-semibold">{formatCurrency(emp.monthlyAdvance)}</TableCell>
+                  <TableCell className="text-orange-600 font-semibold">{formatCurrency(emp.clothTaken)}</TableCell>
+                  <TableCell className="text-orange-600 font-semibold">{formatCurrency(emp.additionalAdvance)}</TableCell>
+                  <TableCell className="text-orange-600 font-semibold">{formatCurrency(emp.ob)}</TableCell>
+                  <TableCell className="text-orange-600 font-semibold">{formatCurrency(emp.previousOutstanding || 0)}</TableCell>
+                  <TableCell className="text-red-600 font-semibold">{formatCurrency(emp.monthLess)}</TableCell>
+                  <TableCell className="text-orange-600 font-semibold">{formatCurrency(emp.remainingOutstanding)}</TableCell>
+                  <TableCell className="text-right font-bold text-emerald-700">{formatCurrency(emp.finalSalary)}</TableCell>
                 </TableRow>
               ))
             )}

@@ -333,16 +333,16 @@ export default function PayrollEditor({
 };
 
   return (
-    <Card className="p-6">
+    <Card className="p-6 bg-[#F0FDF4] border-emerald-300 shadow-sm">
 
       <div className="flex justify-between items-center mb-6">
 
         <div>
-          <h2 className="text-xl font-bold">
+          <h2 className="text-xl font-bold text-emerald-950">
             Edit Payroll
           </h2>
 
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-emerald-700">
             {settings.month + 1}/{settings.year}
           </p>
         </div>
@@ -370,68 +370,68 @@ export default function PayrollEditor({
 
       </div>
 
-      <div className="overflow-auto max-h-[70vh]">
+      <div className="overflow-auto max-h-[70vh] bg-[#F1F5F9] rounded-md border border-slate-300">
 
-        <table className="min-w-max w-full border">
+        <table className="min-w-max w-full border border-slate-300 bg-[#F1F5F9]">
 
-          <thead className="sticky top-0 z-10 bg-gray-100">
+          <thead className="sticky top-0 z-30 bg-slate-200 text-slate-800">
             <tr>
-              <th className="border p-2">ID</th>
-              <th className="border p-2">Name</th>
-              <th className="border p-2">
+              <th className="border border-slate-300 p-2 sticky left-0 z-40 w-[70px] min-w-[70px] bg-slate-200">ID</th>
+              <th className="border border-slate-300 p-2 sticky left-[70px] z-40 min-w-[220px] bg-slate-200">Name</th>
+              <th className="border border-slate-300 p-2">
                 Working Days
               </th>
-              <th className="border p-2">
+              <th className="border border-slate-300 p-2">
                 Weekly Off
               </th>
-              <th className="border p-2">
+              <th className="border border-slate-300 p-2">
                 Leaves
               </th>
-              <th className="border p-2">
+              <th className="border border-slate-300 p-2">
                 Labor Holiday
               </th>
-              <th className="border p-2">
+              <th className="border border-slate-300 p-2">
                 Salary
               </th>
-              <th className="border p-2">
+              <th className="border border-slate-300 p-2">
                 Commission
               </th>
-              <th className="border p-2">
+              <th className="border border-slate-300 p-2">
                 Monthly Advance
               </th>
-              <th className="border p-2">
+              <th className="border border-slate-300 p-2">
                 Cloth Taken
               </th>
-              <th className="border p-2">
+              <th className="border border-slate-300 p-2">
                 Additional Advance
               </th>
-              <th className="border p-2">
+              <th className="border border-slate-300 p-2">
                 Month Less
               </th>
-              <th className="border p-2">
+              <th className="border border-slate-300 p-2">
                 OB
               </th>
-              <th className="border p-2">
+              <th className="border border-slate-300 p-2">
                 Wholesale
               </th>
             </tr>
           </thead>
 
-          <tbody>
+          <tbody className="bg-[#F1F5F9]">
 
             {rows.map((row, index) => (
 
-              <tr key={row.id}>
+              <tr key={row.id} className="bg-[#F1F5F9]">
 
-                <td className="border p-2">
+                <td className="border border-slate-300 p-2 sticky left-0 z-20 w-[70px] min-w-[70px] bg-[#F1F5F9]">
                   {row.id}
                 </td>
 
-                <td className="border p-2">
+                <td className="border border-slate-300 p-2 sticky left-[70px] z-20 min-w-[220px] bg-[#F1F5F9] font-medium text-slate-900">
                   {row.name}
                 </td>
 
-                <td className="border p-2">
+                <td className="border border-slate-300 p-2 bg-[#F1F5F9]">
                   <input
                     type="number"
                     value={row.workingDays}
@@ -442,11 +442,11 @@ export default function PayrollEditor({
                         e.target.value === "" ? "" : Number(e.target.value)
                       )
                     }
-                    className="border rounded px-2 py-1 w-20"
+                    className="bg-white border border-slate-300 rounded px-2 py-1 w-20 text-slate-900 shadow-sm"
                   />
                 </td>
 
-                <td className="border p-2">
+                <td className="border border-slate-300 p-2 bg-[#F1F5F9]">
                   <input
                     type="number"
                     value={row.weeklyOff}
@@ -457,11 +457,11 @@ export default function PayrollEditor({
                         e.target.value === "" ? "" : Number(e.target.value)
                       )
                     }
-                    className="border rounded px-2 py-1 w-20"
+                    className="bg-white border border-slate-300 rounded px-2 py-1 w-20 text-slate-900 shadow-sm"
                   />
                 </td>
 
-                <td className="border p-2">
+                <td className="border border-slate-300 p-2 bg-[#F1F5F9]">
                   <input
                     type="number"
                     value={row.leavesTaken}
@@ -472,11 +472,11 @@ export default function PayrollEditor({
                         e.target.value === "" ? "" : Number(e.target.value)
                       )
                     }
-                    className="border rounded px-2 py-1 w-20"
+                    className="bg-white border border-slate-300 rounded px-2 py-1 w-20 text-slate-900 shadow-sm"
                   />
                 </td>
 
-                <td className="border p-2">
+                <td className="border border-slate-300 p-2 bg-[#F1F5F9]">
                   <input
                     type="number"
                     value={row.laborHoliday}
@@ -487,11 +487,11 @@ export default function PayrollEditor({
                         Number(e.target.value)
                       )
                     }
-                    className="border rounded px-2 py-1 w-20"
+                    className="bg-white border border-slate-300 rounded px-2 py-1 w-20 text-slate-900 shadow-sm"
                   />
                 </td>
 
-                <td className="border p-2">
+                <td className="border border-slate-300 p-2 bg-[#F1F5F9]">
                   <input
                     type="number"
                     value={row.monthlySalary}
@@ -502,11 +502,11 @@ export default function PayrollEditor({
                         Number(e.target.value)
                       )
                     }
-                    className="border rounded px-2 py-1 w-28"
+                    className="bg-white border border-slate-300 rounded px-2 py-1 w-28 text-slate-900 shadow-sm"
                   />
                 </td>
 
-                <td className="border p-2">
+                <td className="border border-slate-300 p-2 bg-[#F1F5F9]">
                   <input
                     type="number"
                     value={row.commission}
@@ -517,11 +517,11 @@ export default function PayrollEditor({
                         Number(e.target.value)
                       )
                     }
-                    className="border rounded px-2 py-1 w-24"
+                    className="bg-white border border-slate-300 rounded px-2 py-1 w-24 text-slate-900 shadow-sm"
                   />
                 </td>
 
-                <td className="border p-2">
+                <td className="border border-slate-300 p-2 bg-[#F1F5F9]">
                   <input
                     type="number"
                     value={row.monthlyAdvance}
@@ -532,11 +532,11 @@ export default function PayrollEditor({
                         Number(e.target.value)
                       )
                     }
-                    className="border rounded px-2 py-1 w-28"
+                    className="bg-white border border-slate-300 rounded px-2 py-1 w-28 text-slate-900 shadow-sm"
                   />
                 </td>
 
-                <td className="border p-2">
+                <td className="border border-slate-300 p-2 bg-[#F1F5F9]">
                   <input
                     type="number"
                     value={row.clothTaken}
@@ -547,11 +547,11 @@ export default function PayrollEditor({
                         Number(e.target.value)
                       )
                     }
-                    className="border rounded px-2 py-1 w-24"
+                    className="bg-white border border-slate-300 rounded px-2 py-1 w-24 text-slate-900 shadow-sm"
                   />
                 </td>
 
-                <td className="border p-2">
+                <td className="border border-slate-300 p-2 bg-[#F1F5F9]">
                   <input
                     type="number"
                     value={row.additionalAdvance}
@@ -562,11 +562,11 @@ export default function PayrollEditor({
                         Number(e.target.value)
                       )
                     }
-                    className="border rounded px-2 py-1 w-28"
+                    className="bg-white border border-slate-300 rounded px-2 py-1 w-28 text-slate-900 shadow-sm"
                   />
                 </td>
 
-                <td className="border p-2">
+                <td className="border border-slate-300 p-2 bg-[#F1F5F9]">
                   <input
                     type="number"
                     value={row.monthLess}
@@ -577,11 +577,11 @@ export default function PayrollEditor({
                         Number(e.target.value)
                       )
                     }
-                    className="border rounded px-2 py-1 w-24"
+                    className="bg-white border border-slate-300 rounded px-2 py-1 w-24 text-slate-900 shadow-sm"
                   />
                 </td>
 
-                <td className="border p-2">
+                <td className="border border-slate-300 p-2 bg-[#F1F5F9]">
                   <input
                     type="number"
                     value={row.ob}
@@ -592,11 +592,11 @@ export default function PayrollEditor({
                         Number(e.target.value)
                       )
                     }
-                    className="border rounded px-2 py-1 w-28"
+                    className="bg-white border border-slate-300 rounded px-2 py-1 w-28 text-slate-900 shadow-sm"
                   />
                 </td>
 
-                <td className="border p-2">
+                <td className="border border-slate-300 p-2 bg-[#F1F5F9]">
                   <input
                     type="number"
                     value={row.wholesale}
@@ -607,7 +607,7 @@ export default function PayrollEditor({
                         Number(e.target.value)
                       )
                     }
-                    className="border rounded px-2 py-1 w-24"
+                    className="bg-white border border-slate-300 rounded px-2 py-1 w-24 text-slate-900 shadow-sm"
                   />
                 </td>
 

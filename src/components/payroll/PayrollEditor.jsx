@@ -23,20 +23,35 @@ export default function PayrollEditor({
      */
     const initRows = async () => {
       let salaryMap = {};
+      let existingMap = {};
 
       try {
         const dbMonth = settings.month + 1;
-        const response = await fetch(
+        
+        // Fetch previous-month salary prefill.
+        const responsePrefill = await fetch(
           `${API_BASE}/api/payroll/month/salary-prefill?year=${settings.year}&month=${dbMonth}`
         );
-        const data = await response.json();
+        const dataPrefill = await responsePrefill.json();
 
-        if (response.ok && data.success) {
-          salaryMap = data.salaryMap || {};
+        if (responsePrefill.ok && dataPrefill.success) {
+          salaryMap = dataPrefill.salaryMap || {};
+        }
+
+        // Fetch current month existing data to prefill if editing an existing month
+        const responseCurrent = await fetch(
+          `${API_BASE}/api/payroll/month?year=${settings.year}&month=${dbMonth}`
+        );
+        const dataCurrent = await responseCurrent.json();
+        
+        if (responseCurrent.ok && dataCurrent.success && dataCurrent.employees) {
+          dataCurrent.employees.forEach(emp => {
+             existingMap[emp.employeeId] = emp;
+          });
         }
       } catch (err) {
         console.error(
-          "Failed to fetch salary prefill:",
+          "Failed to fetch prefill data:",
           err
         );
       }
@@ -45,6 +60,7 @@ export default function PayrollEditor({
         attendanceData.map((emp) => {
           const empId = String(emp.id).trim();
           const prefillSalary = salaryMap[empId];
+          const existing = existingMap[empId];
 
           return {
             id: emp.id,
@@ -54,22 +70,23 @@ export default function PayrollEditor({
             weeklyOff: emp.weeklyOff,
             leavesTaken: emp.leavesTaken,
 
-            monthlySalary:
-              prefillSalary != null && prefillSalary > 0
+            monthlySalary: existing
+              ? existing.salary
+              : (prefillSalary != null && prefillSalary > 0
                 ? prefillSalary
-                : "",
+                : ""),
             commission: 0,
             lunchBoxAllowed: false,
 
             monthlyAdvance: 0,
             clothTaken: 0,
-            additionalAdvance: 0,
-            monthLess: 0,
+            additionalAdvance: existing ? Number(existing.additionalAdvance) : 0,
+            monthLess: existing ? Number(existing.monthLess) : 0,
             wholesale: 0,
-            laborHoliday: 0,
-            ob: 0,
+            laborHoliday: existing ? Number(existing.laborHoliday) : 0,
+            ob: existing ? Number(existing.ob) : 0,
 
-            previousOutstanding: 0,
+            previousOutstanding: existing ? Number(existing.previousOutstanding) : 0,
           };
         })
       );

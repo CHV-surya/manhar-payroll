@@ -36,3 +36,4 @@ dist-ssr
 .agents/
 .claude/
 .windsurf/
+.neon

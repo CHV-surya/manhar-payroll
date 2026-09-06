@@ -43,6 +43,8 @@ name: payroll.name,
       clothTaken: payroll.clothTaken,
       additionalAdvance: payroll.additionalAdvance,
       monthLess: payroll.monthLess,
+      laborHoliday: payroll.laborHoliday,
+      ob: payroll.ob,
       previousOutstanding:
         payroll.previousOutstanding || 0,
     });

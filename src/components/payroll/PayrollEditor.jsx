@@ -56,19 +56,59 @@ export default function PayrollEditor({
         );
       }
 
+      let savedAttendance = {};
+      try {
+        const stored = localStorage.getItem(
+          `payroll_attendance_${settings.year}_${dbMonth}`
+        );
+        if (stored) {
+          savedAttendance = JSON.parse(stored);
+        }
+      } catch (e) {
+        console.warn("Failed to read attendance from localStorage:", e);
+      }
+
       setRows(
         attendanceData.map((emp) => {
           const empId = String(emp.id).trim();
           const prefillSalary = salaryMap[empId];
           const existing = existingMap[empId];
+          const savedAtt = savedAttendance[empId];
+
+          const workingDays =
+            existing && existing.workingDays != null
+              ? Number(existing.workingDays)
+              : savedAtt && savedAtt.workingDays != null
+              ? Number(savedAtt.workingDays)
+              : emp.workingDays != null
+              ? Number(emp.workingDays)
+              : 0;
+
+          const weeklyOff =
+            existing && existing.weeklyOff != null
+              ? Number(existing.weeklyOff)
+              : savedAtt && savedAtt.weeklyOff != null
+              ? Number(savedAtt.weeklyOff)
+              : emp.weeklyOff != null
+              ? Number(emp.weeklyOff)
+              : 0;
+
+          const leavesTaken =
+            existing && existing.leavesTaken != null
+              ? Number(existing.leavesTaken)
+              : savedAtt && savedAtt.leavesTaken != null
+              ? Number(savedAtt.leavesTaken)
+              : emp.leavesTaken != null
+              ? Number(emp.leavesTaken)
+              : 0;
 
           return {
             id: emp.id,
             name: emp.name,
 
-            workingDays: emp.workingDays,
-            weeklyOff: emp.weeklyOff,
-            leavesTaken: emp.leavesTaken,
+            workingDays,
+            weeklyOff,
+            leavesTaken,
 
             monthlySalary: existing
               ? existing.salary
@@ -109,10 +149,17 @@ export default function PayrollEditor({
   try {
     setSaving(true);
 
+    const normalizedRows = rows.map((r) => ({
+      ...r,
+      workingDays: Number(r.workingDays) || 0,
+      weeklyOff: Number(r.weeklyOff) || 0,
+      leavesTaken: Number(r.leavesTaken) || 0,
+    }));
+
     // 1. Merge attendance + manually entered payroll data
     const result = mergeEmployees(
       attendanceData,
-      rows
+      normalizedRows
     );
 
     if (result.missingPayroll.length > 0) {
@@ -120,6 +167,35 @@ export default function PayrollEditor({
         `Missing Payroll for Employee IDs:\n\n${result.missingPayroll.join(", ")}`
       );
       return;
+    }
+
+    // Persist edited attendance values to in-memory attendanceData and localStorage
+    const savedAttendance = {};
+    normalizedRows.forEach((row) => {
+      const id = String(row.id).trim();
+      savedAttendance[id] = {
+        workingDays: row.workingDays,
+        weeklyOff: row.weeklyOff,
+        leavesTaken: row.leavesTaken,
+      };
+
+      const att = attendanceData.find(
+        (a) => String(a.id).trim() === id
+      );
+      if (att) {
+        att.workingDays = row.workingDays;
+        att.weeklyOff = row.weeklyOff;
+        att.leavesTaken = row.leavesTaken;
+      }
+    });
+
+    try {
+      localStorage.setItem(
+        `payroll_attendance_${settings.year}_${settings.month + 1}`,
+        JSON.stringify(savedAttendance)
+      );
+    } catch (e) {
+      console.warn("Failed to persist attendance to localStorage:", e);
     }
 
     // 2. Prepare database payload
@@ -356,15 +432,48 @@ export default function PayrollEditor({
                 </td>
 
                 <td className="border p-2">
-                  {row.workingDays}
+                  <input
+                    type="number"
+                    value={row.workingDays}
+                    onChange={(e) =>
+                      updateValue(
+                        index,
+                        "workingDays",
+                        e.target.value === "" ? "" : Number(e.target.value)
+                      )
+                    }
+                    className="border rounded px-2 py-1 w-20"
+                  />
                 </td>
 
                 <td className="border p-2">
-                  {row.weeklyOff}
+                  <input
+                    type="number"
+                    value={row.weeklyOff}
+                    onChange={(e) =>
+                      updateValue(
+                        index,
+                        "weeklyOff",
+                        e.target.value === "" ? "" : Number(e.target.value)
+                      )
+                    }
+                    className="border rounded px-2 py-1 w-20"
+                  />
                 </td>
 
                 <td className="border p-2">
-                  {row.leavesTaken}
+                  <input
+                    type="number"
+                    value={row.leavesTaken}
+                    onChange={(e) =>
+                      updateValue(
+                        index,
+                        "leavesTaken",
+                        e.target.value === "" ? "" : Number(e.target.value)
+                      )
+                    }
+                    className="border rounded px-2 py-1 w-20"
+                  />
                 </td>
 
                 <td className="border p-2">

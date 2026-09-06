@@ -105,7 +105,6 @@ export default function EmployeeTable({
               <TableHead>Labor Holiday Pay</TableHead>
               <TableHead>Commission</TableHead>
               <TableHead>Wholesale</TableHead>
-              <TableHead>Grocery</TableHead>
               <TableHead>Tea</TableHead>
               <TableHead>Lunch Box</TableHead>
               <TableHead>Leave Deduction</TableHead>
@@ -131,7 +130,7 @@ export default function EmployeeTable({
               <TableRow>
 
                 <TableCell
-                  colSpan={28}
+                  colSpan={27}
                   className="text-center py-10"
                 >
                   No employees found.
@@ -161,7 +160,6 @@ export default function EmployeeTable({
                   <TableCell className="text-green-600 font-semibold">{formatCurrency(emp.laborHolidayPay)}</TableCell>
                   <TableCell className="text-blue-600 font-semibold">{formatCurrency(emp.commission)}</TableCell>
                   <TableCell className="text-blue-600 font-semibold">{formatCurrency(emp.wholesale)}</TableCell>
-                  <TableCell className="text-blue-600 font-semibold">{formatCurrency(emp.grocery || 0)}</TableCell>
                   <TableCell className="text-green-600 font-semibold">{formatCurrency(emp.teaCost)}</TableCell>
                   <TableCell className="text-green-600 font-semibold">{formatCurrency(emp.lunchBoxCost)}</TableCell>
                   <TableCell className="text-red-600 font-semibold">{formatCurrency(emp.leaveDeduction)}</TableCell>

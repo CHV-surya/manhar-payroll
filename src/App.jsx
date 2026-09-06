@@ -68,8 +68,23 @@ function App() {
             previousOutstanding:
               Number(employee.previousOutstanding) || 0,
 
+            previousAdditionalAdvance:
+              Number(employee.previousAdditionalAdvance) || 0,
+
+            previousOb:
+              Number(employee.previousOb) || 0,
+
+            previousMonthLess:
+              Number(employee.previousMonthLess) || 0,
+
             remainingOutstanding:
               Number(employee.remainingOutstanding) || 0,
+
+            laborHoliday:
+              Number(employee.laborHoliday) || 0,
+
+            ob:
+              Number(employee.ob) || 0,
 
             /*
              * Defaults required by the existing payroll

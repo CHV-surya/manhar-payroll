@@ -188,6 +188,15 @@ export default function UploadSection({
           previousOutstanding:
             dbEmployee?.previousOutstanding ?? 0,
 
+          previousAdditionalAdvance:
+            dbEmployee?.previousAdditionalAdvance ?? 0,
+
+          previousOb:
+            dbEmployee?.previousOb ?? 0,
+
+          previousMonthLess:
+            dbEmployee?.previousMonthLess ?? 0,
+
           remainingOutstanding:
             dbEmployee?.remainingOutstanding ?? 0,
 

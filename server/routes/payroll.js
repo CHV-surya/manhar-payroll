@@ -615,6 +615,15 @@ router.get("/month", async (req, res) => {
 
         previousOutstanding,
 
+        previousAdditionalAdvance:
+          Number(previousRecord?.additionalAdvance ?? 0),
+
+        previousOb:
+          Number(previousRecord?.ob ?? 0),
+
+        previousMonthLess:
+          Number(previousRecord?.monthLess ?? 0),
+
         remainingOutstanding:
           Number(record.remainingOutstanding),
       });

@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { Download } from "lucide-react";
+import { Download, Eye } from "lucide-react";
 
 import { exportPayroll } from "@/utils/exportExcel";
 import { formatCurrency } from "@/utils/format";
@@ -23,6 +23,7 @@ export default function EmployeeTable({
   settings,
 }) {
   const [search, setSearch] = useState("");
+  const [openTooltipId, setOpenTooltipId] = useState(null);
   
   const tableWrapperRef = useRef(null);
 
@@ -169,7 +170,20 @@ export default function EmployeeTable({
                   <TableCell className="text-orange-600 font-semibold">{formatCurrency(emp.ob)}</TableCell>
                   <TableCell className="text-orange-600 font-semibold">{formatCurrency(emp.previousOutstanding || 0)}</TableCell>
                   <TableCell className="text-red-600 font-semibold">{formatCurrency(emp.monthLess)}</TableCell>
-                  <TableCell className="text-orange-600 font-semibold">{formatCurrency(emp.remainingOutstanding)}</TableCell>
+                  <TableCell className="text-orange-600 font-semibold relative">
+                    <div className="flex items-center gap-2">
+                      <span>{formatCurrency(emp.remainingOutstanding)}</span>
+                      <Eye
+                        className="h-4 w-4 text-gray-400 cursor-pointer hover:text-gray-600"
+                        onClick={() => setOpenTooltipId(openTooltipId === emp.id ? null : emp.id)}
+                      />
+                    </div>
+                    {openTooltipId === emp.id && (
+                      <div className="absolute left-0 top-full mt-1 z-50 bg-slate-800 text-white text-xs rounded px-2 py-1 shadow-lg whitespace-nowrap">
+                        Next Month Remaining: {formatCurrency(emp.remainingOutstanding)}
+                      </div>
+                    )}
+                  </TableCell>
                   <TableCell className="text-right font-bold text-emerald-700">{formatCurrency(emp.finalSalary)}</TableCell>
                 </TableRow>
               ))

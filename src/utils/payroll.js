@@ -133,6 +133,15 @@ export function calculatePayroll(
         )
       : 0;
 
+  const isZeroAttendance =
+    employee.workingDays === 0 &&
+    employee.weeklyOff === 0 &&
+    totalAttendance === 0;
+
+  const effectiveAllowedLeaves = isZeroAttendance
+    ? 0
+    : settings.allowedLeaves;
+
   const {
     bonus,
     leaveDeduction,
@@ -141,12 +150,12 @@ export function calculatePayroll(
   } = calculateLeaveAdjustment(
     dailySalary,
     employee.leavesTaken,
-    settings.allowedLeaves
+    effectiveAllowedLeaves
   );
 
   // Casual Leave
   const casualLeaves = Math.max(
-    settings.allowedLeaves -
+    effectiveAllowedLeaves -
       employee.leavesTaken,
     0
   );

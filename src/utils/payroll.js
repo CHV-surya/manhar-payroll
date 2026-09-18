@@ -100,8 +100,9 @@ export function calculatePayroll(
   employee,
   settings
 ) {
+  const monthlySalary = Number(employee.monthlySalary) || 0;
   const dailySalary =
-    calculateDailySalary(employee.monthlySalary);
+    calculateDailySalary(monthlySalary);
 
   // Weekly Off Rule
   const weeklyOff =
@@ -169,7 +170,7 @@ export function calculatePayroll(
 
   // Gross Salary
   const grossSalary =
-    employee.monthlySalary +
+    monthlySalary +
     casualLeavePay +
     weeklyOffPay +
     bonus +
@@ -194,8 +195,8 @@ export function calculatePayroll(
     employee.additionalAdvance +
     ob;
 
-  // Remaining Outstanding Loan
-  const remainingOutstanding =
+  // Base Remaining Outstanding Loan
+  const baseRemainingOutstanding =
     Math.max(
       outstandingLoan -
         employee.monthLess,
@@ -214,6 +215,12 @@ export function calculatePayroll(
     grossSalary +
     additions -
     deductions;
+
+  // Apply Negative Final Salary Adjustment
+  const remainingOutstanding =
+    finalSalary < 0
+      ? baseRemainingOutstanding + Math.abs(finalSalary)
+      : baseRemainingOutstanding;
 
   return {
     ...employee,

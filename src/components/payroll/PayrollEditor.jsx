@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 
 const API_BASE = import.meta.env.VITE_API_URL || "";
 
+import { calculatePayroll } from "@/utils/payroll";
 export default function PayrollEditor({
   attendanceData,
   setEmployees,
@@ -198,26 +199,32 @@ export default function PayrollEditor({
       console.warn("Failed to persist attendance to localStorage:", e);
     }
 
-    // 2. Prepare database payload
-    const employeesForDatabase = result.employees.map((employee) => ({
-      id: String(employee.id).trim(),
-      name: String(employee.name ?? "").trim(),
+    // 2. Prepare database payload    
+    const employeesForDatabase = result.employees.map((employee) => {
+      const calculated = calculatePayroll(employee, settings);
+      
+      return {
+        id: String(employee.id).trim(),
+        name: String(employee.name ?? "").trim(),
 
-      salary:
-        Number(employee.monthlySalary) || 0,
+        salary:
+          Number(employee.monthlySalary) || 0,
 
-      additionalAdvance:
-        Number(employee.additionalAdvance) || 0,
+        additionalAdvance:
+          Number(employee.additionalAdvance) || 0,
 
-      monthLess:
-        Number(employee.monthLess) || 0,
+        monthLess:
+          Number(employee.monthLess) || 0,
 
-      laborHoliday:
-        Number(employee.laborHoliday) || 0,
+        laborHoliday:
+          Number(employee.laborHoliday) || 0,
 
-      ob:
-        Number(employee.ob) || 0,
-    }));
+        ob:
+          Number(employee.ob) || 0,
+          
+        finalSalary: calculated.finalSalary,
+      };
+    });
 
     // 3. Save to backend
     const response = await fetch(

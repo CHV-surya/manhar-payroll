@@ -3,7 +3,8 @@ import { prisma } from "../prisma.js";
 export async function recalculateOutstandingFromMonth(
   employeeId,
   startYear,
-  startMonth
+  startMonth,
+  currentMonthAdjustment = 0
 ) {
   /*
    * Get every monthly record for this employee
@@ -95,13 +96,18 @@ export async function recalculateOutstandingFromMonth(
       record.ob ?? 0
     );
 
-    const remainingOutstanding = Math.max(
+    const baseRemainingOutstanding = Math.max(
       0,
       previousOutstanding +
         additionalAdvance +
         ob -
         monthLess
     );
+
+    let remainingOutstanding = baseRemainingOutstanding;
+    if (record.year === startYear && record.month === startMonth) {
+      remainingOutstanding += currentMonthAdjustment;
+    }
 
     const updated =
       await prisma.monthlyOutstanding.update({

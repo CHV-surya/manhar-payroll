@@ -182,13 +182,19 @@ const missingEmployees = existingMonthRecords
        * = Remaining Outstanding
        */
 
-      const remainingOutstanding = Math.max(
+      const finalSalary = Number(employee.finalSalary) || 0;
+
+      const baseRemainingOutstanding = Math.max(
   0,
   previousOutstanding +
     additionalAdvance +
     ob -
     monthLess
 );
+
+      const remainingOutstanding = finalSalary < 0
+        ? baseRemainingOutstanding + Math.abs(finalSalary)
+        : baseRemainingOutstanding;
 
       /*
        * Create or update this month's record.
@@ -400,7 +406,9 @@ router.post("/month/replace", async (req, res) => {
             0
         );
 
-      const remainingOutstanding =
+      const finalSalary = Number(employee.finalSalary) || 0;
+
+      const baseRemainingOutstanding =
         Math.max(
           0,
           previousOutstanding +
@@ -408,6 +416,11 @@ router.post("/month/replace", async (req, res) => {
             ob -
             monthLess
         );
+
+      const remainingOutstanding =
+        finalSalary < 0
+          ? baseRemainingOutstanding + Math.abs(finalSalary)
+          : baseRemainingOutstanding;
 
       await prisma.monthlyOutstanding.upsert({
         where: {
@@ -492,11 +505,15 @@ router.post("/month/replace", async (req, res) => {
         continue;
       }
 
+      const finalSalary = Number(employee.finalSalary) || 0;
+      const currentMonthAdjustment = finalSalary < 0 ? Math.abs(finalSalary) : 0;
+
       const records =
         await recalculateOutstandingFromMonth(
           employeeId,
           Number(year),
-          Number(month)
+          Number(month),
+          currentMonthAdjustment
         );
 
       recalculatedEmployees.push({
@@ -558,6 +575,13 @@ router.get("/month", async (req, res) => {
     const previousYear =
       month === 1 ? year - 1 : year;
 
+    // Determine next month (for eye-icon lookup)
+    const nextMonth =
+      month === 12 ? 1 : month + 1;
+
+    const nextYear =
+      month === 12 ? year + 1 : year;
+
     // Get current month's records
     const records =
       await prisma.monthlyOutstanding.findMany({
@@ -572,6 +596,26 @@ router.get("/month", async (req, res) => {
           employeeId: "asc",
         },
       });
+
+    // Batch-fetch next month's records (single query)
+    const nextMonthRecords =
+      await prisma.monthlyOutstanding.findMany({
+        where: {
+          year: nextYear,
+          month: nextMonth,
+        },
+        select: {
+          employeeId: true,
+          remainingOutstanding: true,
+        },
+      });
+
+    // Build lookup: employeeId -> next month's remainingOutstanding
+    const nextMonthMap = {};
+    for (const nmr of nextMonthRecords) {
+      nextMonthMap[nmr.employeeId] =
+        Number(nmr.remainingOutstanding);
+    }
 
     const employees = [];
 
@@ -626,6 +670,11 @@ router.get("/month", async (req, res) => {
 
         remainingOutstanding:
           Number(record.remainingOutstanding),
+
+        nextMonthRemainingOutstanding:
+          nextMonthMap.hasOwnProperty(record.employeeId)
+            ? nextMonthMap[record.employeeId]
+            : null,
       });
     }
 

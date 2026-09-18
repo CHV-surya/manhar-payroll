@@ -80,6 +80,9 @@ function App() {
             remainingOutstanding:
               Number(employee.remainingOutstanding) || 0,
 
+            nextMonthRemainingOutstanding:
+              employee.nextMonthRemainingOutstanding,
+
             laborHoliday:
               Number(employee.laborHoliday) || 0,
 

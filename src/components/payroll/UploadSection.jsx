@@ -14,6 +14,7 @@ import {
 
 import { downloadPayrollTemplate } from "@/utils/downloadPayrollTemplate";
 import PayrollEditor from "@/components/payroll/PayrollEditor";
+import { calculatePayroll } from "@/utils/payroll";
 
 import {
   Upload,
@@ -321,22 +322,28 @@ export default function UploadSection({
        * Data that will be sent to backend.
        */
       const employeesForDatabase =
-        result.employees.map((employee) => ({
-          id: String(employee.id).trim(),
+        result.employees.map((employee) => {
+          const calculated = calculatePayroll(employee, settings);
+          
+          return {
+            id: String(employee.id).trim(),
 
-          name: String(
-            employee.name ?? ""
-          ).trim(),
+            name: String(
+              employee.name ?? ""
+            ).trim(),
 
-          salary:
-            Number(employee.monthlySalary) || 0,
+            salary:
+              Number(employee.monthlySalary) || 0,
 
-          additionalAdvance:
-            Number(employee.additionalAdvance) || 0,
+            additionalAdvance:
+              Number(employee.additionalAdvance) || 0,
 
-          monthLess:
-            Number(employee.monthLess) || 0,
-        }));
+            monthLess:
+              Number(employee.monthLess) || 0,
+              
+            finalSalary: calculated.finalSalary,
+          };
+        });
 
       const response = await fetch(
   `${API_BASE}/api/payroll/month`,

@@ -180,7 +180,11 @@ export default function EmployeeTable({
                     </div>
                     {openTooltipId === emp.id && (
                       <div className="absolute left-0 top-full mt-1 z-50 bg-slate-800 text-white text-xs rounded px-2 py-1 shadow-lg whitespace-nowrap">
-                        Next Month Remaining: {formatCurrency(emp.remainingOutstanding)}
+                        Next Month Remaining: {formatCurrency(
+                          emp.nextMonthRemainingOutstanding != null
+                            ? emp.nextMonthRemainingOutstanding
+                            : emp.remainingOutstanding
+                        )}
                       </div>
                     )}
                   </TableCell>

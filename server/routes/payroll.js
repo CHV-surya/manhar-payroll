@@ -737,20 +737,27 @@ router.get("/month/salary-prefill", async (req, res) => {
         select: {
           employeeId: true,
           salary: true,
+          remainingOutstanding: true,
         },
       });
 
     /*
-     * Build a map: employeeId -> salary
+     * Build maps:
+     * employeeId -> salary
+     * employeeId -> remainingOutstanding
      *
      * Employees not found here will get 0
      * on the frontend (new employee rule).
      */
     const salaryMap = {};
+    const remainingOutstandingMap = {};
 
     for (const record of previousRecords) {
-      salaryMap[record.employeeId] =
+      const empId = String(record.employeeId).trim();
+      salaryMap[empId] =
         Number(record.salary);
+      remainingOutstandingMap[empId] =
+        Number(record.remainingOutstanding);
     }
 
     return res.json({
@@ -760,6 +767,7 @@ router.get("/month/salary-prefill", async (req, res) => {
       previousYear,
       previousMonth,
       salaryMap,
+      remainingOutstandingMap,
     });
 
   } catch (error) {

@@ -19,6 +19,7 @@ export async function downloadPayrollTemplate(
    * (same as for new employees).
    */
   let salaryMap = {};
+  let remainingOutstandingMap = {};
 
   if (settings) {
     try {
@@ -30,6 +31,8 @@ export async function downloadPayrollTemplate(
 
       if (response.ok && data.success) {
         salaryMap = data.salaryMap || {};
+        remainingOutstandingMap =
+          data.remainingOutstandingMap || {};
       }
     } catch (err) {
       console.error(
@@ -42,6 +45,18 @@ export async function downloadPayrollTemplate(
   const rows = attendanceEmployees.map((emp) => {
     const empId = String(emp.id).trim();
     const prefillSalary = salaryMap[empId];
+
+    /*
+     * Prefill Month Less with the previous month's
+     * Remaining Outstanding for this employee.
+     *
+     * If the employee has no previous record,
+     * default to 0 (existing behavior).
+     */
+    const prefillMonthLess =
+      remainingOutstandingMap[empId] != null
+        ? Number(remainingOutstandingMap[empId])
+        : 0;
 
     return {
       "Employee ID": emp.id,
@@ -60,7 +75,7 @@ export async function downloadPayrollTemplate(
       "Salary Advance": 0,
       "Cloth Taken": 0,
       "Additional Advance": 0,
-      "Month Less": 0,
+      "Month Less": prefillMonthLess,
       "OB": 0,
       "Wholesale": 0,
     };

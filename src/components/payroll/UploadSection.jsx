@@ -35,6 +35,7 @@ const API_BASE = import.meta.env.VITE_API_URL || "";
 export default function UploadSection({
   setEmployees,
   settings,
+  onBeforeAttendanceUpload,
 }) {
   const attendanceInputRef = useRef(null);
   const payrollInputRef = useRef(null);
@@ -99,6 +100,13 @@ export default function UploadSection({
   };
 
   const chooseAttendance = () => {
+    if (onBeforeAttendanceUpload) {
+      const intercepted = onBeforeAttendanceUpload(() => {
+        attendanceInputRef.current?.click();
+      });
+      if (intercepted) return;
+    }
+
     attendanceInputRef.current?.click();
   };
 

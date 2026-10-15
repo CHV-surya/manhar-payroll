@@ -11,6 +11,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { cn } from "@/lib/utils";
+
 const months = [
   "January",
   "February",
@@ -29,6 +31,8 @@ const months = [
 export default function PayrollSettings({
   settings,
   setSettings,
+  highlightMonth = false,
+  onClearHighlight,
 }) {
 
   // ✅ MUST be inside the component
@@ -53,20 +57,42 @@ export default function PayrollSettings({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
 
         <div>
-          <Label className="mb-2 block">
-            Month
-          </Label>
+          <div className="flex items-center justify-between mb-2">
+            <Label>
+              Month
+            </Label>
+            {highlightMonth && (
+              <span className="text-xs font-semibold text-amber-700 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded shadow-xs animate-pulse">
+                Select Recommended Month
+              </span>
+            )}
+          </div>
 
           <Select
             value={months[settings.month]}
-            onValueChange={(value) =>
+            onValueChange={(value) => {
+              if (highlightMonth && onClearHighlight) {
+                onClearHighlight();
+              }
               setSettings({
                 ...settings,
                 month: months.indexOf(value),
-              })
-            }
+              });
+            }}
           >
-            <SelectTrigger>
+            <SelectTrigger
+              id="payroll-month-select-trigger"
+              onClick={() => {
+                if (highlightMonth && onClearHighlight) {
+                  onClearHighlight();
+                }
+              }}
+              className={cn(
+                "w-full",
+                highlightMonth &&
+                  "ring-2 ring-amber-500 ring-offset-2 border-amber-500 shadow-md transition-all duration-300"
+              )}
+            >
               <SelectValue />
             </SelectTrigger>
 

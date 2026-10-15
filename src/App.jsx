@@ -8,6 +8,11 @@ import EmployeeTable from "./components/payroll/EmployeeTable";
 
 import { processPayroll } from "./utils/processPayroll";
 import { calculateSummary } from "./utils/summary";
+import PayrollMonthWarningDialog from "./components/payroll/PayrollMonthWarningDialog";
+import {
+  isPayrollMonthWarningActive,
+  getPayrollMonthRecommendation,
+} from "./utils/monthWarning";
 
 const API_BASE = import.meta.env.VITE_API_URL || "";
 
@@ -22,6 +27,60 @@ function App() {
     teaCost: 8,
     boxCost: 25,
   });
+
+  const [showMonthWarning, setShowMonthWarning] = useState(() => {
+    return isPayrollMonthWarningActive();
+  });
+  const [highlightMonth, setHighlightMonth] = useState(false);
+  const [onProceedAfterWarning, setOnProceedAfterWarning] = useState(null);
+
+  const handleContinueWarning = () => {
+    setShowMonthWarning(false);
+    if (onProceedAfterWarning) {
+      const proceed = onProceedAfterWarning;
+      setOnProceedAfterWarning(null);
+      proceed();
+    }
+  };
+
+  const handleOkWarning = () => {
+    setShowMonthWarning(false);
+    setOnProceedAfterWarning(null);
+    setHighlightMonth(true);
+
+    setTimeout(() => {
+      const el = document.getElementById("payroll-month-select-trigger");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        el.focus();
+      }
+    }, 100);
+
+    setTimeout(() => {
+      setHighlightMonth(false);
+    }, 12000);
+  };
+
+  const handleBeforeAttendanceUpload = (proceedCallback) => {
+    const isWarningActive = isPayrollMonthWarningActive();
+    const recommendation = getPayrollMonthRecommendation(
+      new Date(),
+      settings.month,
+      settings.year
+    );
+
+    const isRecommendedMonthSelected =
+      settings.month === recommendation.prevMonthIndex &&
+      settings.year === recommendation.prevYear;
+
+    if (isWarningActive && !isRecommendedMonthSelected) {
+      setOnProceedAfterWarning(() => proceedCallback);
+      setShowMonthWarning(true);
+      return true;
+    }
+
+    return false;
+  };
 
   /*
    * Load saved payroll whenever month/year changes.
@@ -153,6 +212,22 @@ function App() {
         <PayrollSettings
           settings={settings}
           setSettings={setSettings}
+          highlightMonth={highlightMonth}
+          onClearHighlight={() => setHighlightMonth(false)}
+        />
+
+        <PayrollMonthWarningDialog
+          open={showMonthWarning}
+          onOpenChange={(open) => {
+            setShowMonthWarning(open);
+            if (!open) {
+              setOnProceedAfterWarning(null);
+            }
+          }}
+          onContinue={handleContinueWarning}
+          onOk={handleOkWarning}
+          selectedMonth={settings.month}
+          selectedYear={settings.year}
         />
 
         {loadingEmployees && (
@@ -164,6 +239,7 @@ function App() {
         <UploadSection
           setEmployees={setEmployees}
           settings={settings}
+          onBeforeAttendanceUpload={handleBeforeAttendanceUpload}
         />
 
         <SummaryCards
